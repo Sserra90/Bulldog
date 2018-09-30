@@ -1,1 +1,1 @@
-include ':app', ':bulldog-processor', ':bulldog-annotations'
+include ':app', ':bulldog-processor', ':bulldog-annotations', ':bulldog-runtime'
