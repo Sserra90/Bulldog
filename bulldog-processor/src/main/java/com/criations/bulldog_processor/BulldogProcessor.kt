@@ -12,6 +12,7 @@ import javax.tools.Diagnostic.Kind.ERROR
 import javax.tools.Diagnostic.Kind.WARNING
 
 @AutoService(Processor::class)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 class BulldogProcessor : AbstractProcessor() {
 
     private var mMessager: Messager? = null
@@ -37,8 +38,6 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
     override fun getSupportedAnnotationTypes(): Set<String> = setOf(Bulldog::class.java.canonicalName)
-
-    override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
 
     override fun process(set: Set<TypeElement>, env: RoundEnvironment): Boolean {
         warning("Process")
