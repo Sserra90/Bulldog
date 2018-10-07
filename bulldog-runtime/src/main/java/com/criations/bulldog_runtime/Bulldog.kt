@@ -2,34 +2,42 @@
 
 package com.criations.bulldog_runtime
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 lateinit var prefs: SharedPreferences
+@SuppressLint("StaticFieldLeak") // Use application context
+lateinit var bullDogCtx: Context
+
+inline fun <reified V : Any> Any.bindPreference(prefs: SharedPreferences, default: V, key: String? = null): ReadWriteProperty<Any, V> {
+    return PreferencesVar(prefs, IdentityAdapter(V::class.java), key) { default }
+}
 
 inline fun <reified V : Any> Any.bindPreference(default: V, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(IdentityAdapter(V::class.java), key) { default }
+    return PreferencesVar(prefs, IdentityAdapter(V::class.java), key) { default }
 }
 
 inline fun <reified V : Any> Any.bindPreference(noinline default: () -> V, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(IdentityAdapter(V::class.java), key, default)
+    return PreferencesVar(prefs, IdentityAdapter(V::class.java), key, default)
 }
 
 inline fun <reified V : Any, reified P : Any> Any.bindPreference(default: V, adapter: Adapter<V, P>, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(adapter, key) { default }
+    return PreferencesVar(prefs, adapter, key) { default }
 }
 
 inline fun <reified V : Any, reified P : Any> Any.bindPreference(noinline default: () -> V, adapter: Adapter<V, P>, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(adapter, key, default)
+    return PreferencesVar(prefs, adapter, key, default)
 }
 
 inline fun <reified E : Enum<E>> Any.bindEnumPreference(default: E, key: String? = null): ReadWriteProperty<Any, E> {
-    return PreferencesVar(EnumAdapter(E::class.java), key) { default }
+    return PreferencesVar(prefs, EnumAdapter(E::class.java), key) { default }
 }
 
 inline fun <reified E : Enum<E>> Any.bindEnumPreference(noinline default: () -> E, key: String? = null): ReadWriteProperty<Any, E> {
-    return PreferencesVar(EnumAdapter(E::class.java), key, default)
+    return PreferencesVar(prefs, EnumAdapter(E::class.java), key, default)
 }
 
 interface Adapter<V, P> {
@@ -52,6 +60,7 @@ class EnumAdapter<E : Enum<E>>(val clazz: Class<E>) : Adapter<E, String> {
 
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN", "UNCHECKED_CAST")
 class PreferencesVar<T : Any, V : Any, P : Any>(
+        private val prefs: SharedPreferences,
         private val adapter: Adapter<V, P>,
         private val key: String?,
         private val default: () -> V

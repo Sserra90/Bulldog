@@ -1,9 +1,9 @@
 package com.criations.bulldog
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
-import com.criations.bulldog_runtime.prefs
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import com.criations.bulldog_runtime.bullDogCtx
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,6 +11,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        bullDogCtx = applicationContext
+
+        UserSettings().apply {
+            Log.d("PREFS", "Id $id")
+            Log.d("PREFS", "Id $email")
+        }
+
     }
 }
