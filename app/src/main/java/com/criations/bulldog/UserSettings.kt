@@ -17,6 +17,12 @@ interface UserModel {
     val email: String
 }
 
+@Bulldog(name = "NetworkSettings")
+abstract class NetworkModel {
+    abstract val id: Int
+    abstract val email: String
+}
+
 class UserSettings : UserModel {
 
     private val prefs: SharedPreferences = bullDogCtx.getSharedPreferences(javaClass.simpleName, MODE_PRIVATE)

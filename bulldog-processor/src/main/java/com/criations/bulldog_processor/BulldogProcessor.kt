@@ -4,6 +4,7 @@ import com.criations.bulldog_annotations.Bulldog
 import com.google.auto.service.AutoService
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
@@ -43,7 +44,7 @@ class BulldogProcessor : AbstractProcessor() {
         warning("Process")
 
         // Parse @Bulldog annotated elements
-        ElementFilter.typesIn(env.getElementsAnnotatedWith(Bulldog::class.java)).forEach{
+        ElementFilter.typesIn(env.getElementsAnnotatedWith(Bulldog::class.java)).forEach {
             parseBulldogAnnotation(it)
         }
 
@@ -51,7 +52,14 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
     private fun parseBulldogAnnotation(type: TypeElement) {
-        warning("Parse type: %s", type)
+        warning("\nParse type: %s", type)
+
+        type.enclosedElements
+                .filter { it.kind == ElementKind.METHOD }
+                .forEach {
+                    warning("Elements: %s type: %s name: %s", it, it.kind, it.simpleName)
+
+                }
 
     }
 }
