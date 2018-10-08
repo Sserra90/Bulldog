@@ -17,8 +17,8 @@ interface UserModel {
     val email: String
 }
 
-@Bulldog(name = "NetworkSettings")
-abstract class NetworkModel {
+@Bulldog
+abstract class NetworkSettings {
     abstract val id: Int
     abstract val email: String
 }

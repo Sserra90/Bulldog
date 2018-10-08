@@ -50,11 +50,18 @@ class BulldogProcessor : AbstractProcessor() {
 
         warning("Bindings: %s", bindings)
 
+        makeItHappen()
+
         return true
     }
 
     private fun parseBulldogAnnotation(type: TypeElement, bindings: MutableList<BulldogElement>) {
         warning("Parse type: %s", type)
         bindings.add(BulldogElement(type))
+    }
+
+    private fun makeItHappen() {
+        warning("Make it happen")
+
     }
 }

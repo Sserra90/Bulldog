@@ -1,5 +1,6 @@
 package com.criations.bulldog_processor
 
+import com.criations.bulldog_annotations.Bulldog
 import javax.lang.model.element.*
 import javax.lang.model.type.TypeMirror
 
@@ -12,9 +13,18 @@ class BulldogElement(element: Element) : AnnotatedElement(element) {
             .map { FieldElement(it) }
             .toList()
 
+    val className: String
+        get() {
+            return if (element.getAnnotation(Bulldog::class.java).name.isNotBlank()) {
+                element.getAnnotation(Bulldog::class.java).name
+            } else {
+                name.toString()
+            }
+        }
+
     override fun toString(): String {
         return "BulldogElement{" +
-                " name=$name" +
+                " className=$className" +
                 " fields=$fields" +
                 "}"
     }
