@@ -4,7 +4,6 @@ import com.criations.bulldog_annotations.Bulldog
 import com.google.auto.service.AutoService
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
@@ -41,25 +40,21 @@ class BulldogProcessor : AbstractProcessor() {
     override fun getSupportedAnnotationTypes(): Set<String> = setOf(Bulldog::class.java.canonicalName)
 
     override fun process(set: Set<TypeElement>, env: RoundEnvironment): Boolean {
-        warning("Process")
+
+        val bindings: MutableList<BulldogElement> = mutableListOf()
 
         // Parse @Bulldog annotated elements
         ElementFilter.typesIn(env.getElementsAnnotatedWith(Bulldog::class.java)).forEach {
-            parseBulldogAnnotation(it)
+            parseBulldogAnnotation(it, bindings)
         }
+
+        warning("Bindings: %s", bindings)
 
         return true
     }
 
-    private fun parseBulldogAnnotation(type: TypeElement) {
-        warning("\nParse type: %s", type)
-
-        type.enclosedElements
-                .filter { it.kind == ElementKind.METHOD }
-                .forEach {
-                    warning("Elements: %s type: %s name: %s", it, it.kind, it.simpleName)
-
-                }
-
+    private fun parseBulldogAnnotation(type: TypeElement, bindings: MutableList<BulldogElement>) {
+        warning("Parse type: %s", type)
+        bindings.add(BulldogElement(type))
     }
 }

@@ -1,10 +1,44 @@
 package com.criations.bulldog_processor
 
-import javax.lang.model.element.Element
-import javax.lang.model.element.Name
-import javax.lang.model.element.TypeElement
+import javax.lang.model.element.*
+import javax.lang.model.type.TypeMirror
 
-abstract class AnnotatedElement(private val element: Element) {
+class BulldogElement(element: Element) : AnnotatedElement(element) {
+
+    val fields: List<FieldElement> = element
+            .enclosedElements
+            .asSequence()
+            .filter { it.kind == ElementKind.METHOD }
+            .map { FieldElement(it) }
+            .toList()
+
+    override fun toString(): String {
+        return "BulldogElement{" +
+                " name=$name" +
+                " fields=$fields" +
+                "}"
+    }
+
+}
+
+class FieldElement(element: Element) : AnnotatedElement(element) {
+
+    val fieldType: TypeMirror
+        get() = (element as ExecutableElement).returnType
+
+    val fieldName: String
+        get() = element.simpleName.toString().substring(3, element.simpleName.length).toLowerCase()
+
+    override fun toString(): String {
+        return "FieldElement{" +
+                " fieldType=" + fieldType +
+                " fieldName=" + fieldName +
+                '}'
+    }
+
+}
+
+abstract class AnnotatedElement(val element: Element) {
 
     val name: Name
         get() = element.simpleName
@@ -15,22 +49,6 @@ abstract class AnnotatedElement(private val element: Element) {
     override fun toString(): String {
         return "AnnotatedElement{" +
                 "element=" + element +
-                '}'.toString()
+                '}'
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as AnnotatedElement
-
-        if (element != other.element) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return element.hashCode()
-    }
-
 }
