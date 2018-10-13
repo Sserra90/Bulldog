@@ -1,5 +1,9 @@
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
+
+// Jitpack group
+group = 'org.bitbucket.Sserra.bulldog'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
