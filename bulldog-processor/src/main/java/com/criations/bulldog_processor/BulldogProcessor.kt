@@ -7,6 +7,7 @@ import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
@@ -21,6 +22,7 @@ class BulldogProcessor : AbstractProcessor() {
     private lateinit var mFiler: Filer
     private lateinit var mTypeUtils: Types
     private lateinit var mElements: Elements
+    private val allowedTypes: MutableList<TypeMirror> = mutableListOf()
 
     private fun error(msg: String, vararg args: Any) {
         mMessager.printMessage(ERROR, String.format(msg, *args))
@@ -37,6 +39,12 @@ class BulldogProcessor : AbstractProcessor() {
         mFiler = env.filer
         mTypeUtils = env.typeUtils
         mElements = env.elementUtils
+
+        allowedTypes.add("java.lang.Long".asType(mElements))
+        allowedTypes.add("java.lang.Integer".asType(mElements))
+        allowedTypes.add("java.lang.Float".asType(mElements))
+        allowedTypes.add("java.lang.String".asType(mElements))
+        allowedTypes.add("java.lang.Boolean".asType(mElements))
     }
 
     override fun getSupportedAnnotationTypes(): Set<String> = setOf(Bulldog::class.java.canonicalName)
@@ -59,7 +67,33 @@ class BulldogProcessor : AbstractProcessor() {
 
     private fun parseBulldogAnnotation(type: TypeElement, bindings: MutableList<BulldogElement>) {
         warning("Parse type: %s", type)
-        bindings.add(BulldogElement(type))
+        val bulldogElement = BulldogElement(type)
+        if (validate(bulldogElement)) {
+            bindings.add(bulldogElement)
+        }
+    }
+
+    private fun validate(element: BulldogElement): Boolean {
+        element.fields.forEach { field ->
+            if (!allowedTypes.contains(mapToJavaType(field))) {
+                error("Type %s not allowed for field: %s", field.fieldType.asTypeName(), field)
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun mapToJavaType(field: FieldElement): TypeMirror? {
+        return when (field.fieldType.asTypeName().toString()) {
+            "kotlin.Long" -> "java.lang.Long".asType(mElements)
+            "kotlin.String" -> "java.lang.String".asType(mElements)
+            "kotlin.Float" -> "java.lang.Float".asType(mElements)
+            "kotlin.Int" -> "java.lang.Integer".asType(mElements)
+            "kotlin.Boolean" -> "java.lang.Boolean".asType(mElements)
+
+            "java.lang.String" -> "java.lang.String".asType(mElements)
+            else -> null
+        }
     }
 
     private fun makeItHappen(bindings: List<BulldogElement>) {
@@ -162,3 +196,5 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
 }
+
+fun String.asType(elements: Elements): TypeMirror = elements.getTypeElement(this).asType()
