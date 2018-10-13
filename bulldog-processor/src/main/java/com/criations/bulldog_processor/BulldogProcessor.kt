@@ -76,7 +76,7 @@ class BulldogProcessor : AbstractProcessor() {
             warning("Add type: %s", it.className)
 
             val funcSpecs = mutableListOf<FunSpec>()
-            val funClearAllSpec = FunSpec.builder(CLEAR_ALL).addCode("return $PREFS.edit().apply{")
+            val funClearAllSpec = FunSpec.builder(CLEAR_ALL).addCode("$PREFS.edit().apply{")
 
             val classSpec = TypeSpec.classBuilder(it.className)
             val prefsSpec = PropertySpec.builder(PREFS, prefsType)
@@ -88,6 +88,7 @@ class BulldogProcessor : AbstractProcessor() {
             it.fields.forEach { field ->
                 val propSpec = PropertySpec.builder(field.fieldName, getType(field))
                         .addModifiers(KModifier.PUBLIC)
+                        .mutable(true)
                         .delegate(getCodeFormat(field), bindPrefType, field.value, field.fieldName)
                         .build()
                 classSpec.addProperty(propSpec)
@@ -103,6 +104,8 @@ class BulldogProcessor : AbstractProcessor() {
 
             funcSpecs.add(funClearAllSpec.addStatement("}.apply()").build())
 
+            funcSpecs.add(generateToString(it))
+
             classSpec.addFunctions(funcSpecs)
             file.addType(classSpec.build())
         }
@@ -115,6 +118,18 @@ class BulldogProcessor : AbstractProcessor() {
         file.build().writeTo(outfile)
     }
 
+    private fun generateToString(element: BulldogElement): FunSpec {
+        var toStringBody = ""
+        element.fields.forEach { field ->
+            toStringBody += " ${field.fieldName}=$${field.fieldName},"
+        }
+        return FunSpec.builder("toString")
+                .addModifiers(KModifier.OVERRIDE)
+                .returns(String::class)
+                .addCode("return \"%L $toStringBody\"", element.className)
+                .build()
+    }
+
     private fun getType(field: FieldElement): TypeName {
         return when (field.fieldType.toString()) {
             "java.lang.String" -> ClassName("kotlin", "String")
@@ -123,15 +138,15 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
     private fun getCodeFormat(field: FieldElement): String {
-        if (mTypeUtils.isAssignable(field.fieldType, mElements.getTypeElement("java.lang.String").asType())) {
-            return "%T($PREFS, %S, %S)"
+        return when (field.fieldType.asTypeName().toString()) {
+            "java.lang.String" -> "%T($PREFS, %S, %S)"
+            "kotlin.Float" -> "%T($PREFS, %LF, %S)"
+            else -> "%T($PREFS, %L, %S)"
         }
-        return "%T($PREFS, %L, %S)"
     }
 
     private fun getPackage(element: TypeElement): String =
             element.qualifiedName.toString().substring(0, element.qualifiedName.toString().lastIndexOf("."))
-
 
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"

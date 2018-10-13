@@ -13,10 +13,12 @@ class MainActivity : AppCompatActivity() {
 
         bullDogCtx = applicationContext
 
-        UserSettings().apply {
-            Log.d("PREFS", "Id $id")
-            Log.d("PREFS", "Id $email")
-        }
+        /*UserSettings().apply {
+            id = 2
+            email = "abc@gmail.com"
+        }*/
+
+        Log.d("PREFS", UserSettings().toString())
 
     }
 

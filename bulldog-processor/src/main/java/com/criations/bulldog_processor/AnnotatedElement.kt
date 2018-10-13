@@ -1,6 +1,7 @@
 package com.criations.bulldog_processor
 
 import com.criations.bulldog_annotations.Bulldog
+import com.squareup.kotlinpoet.asTypeName
 import javax.lang.model.element.*
 import javax.lang.model.type.TypeMirror
 
@@ -48,7 +49,7 @@ class FieldElement(element: Element) : AnnotatedElement(element) {
 
     override fun toString(): String {
         return "FieldElement{" +
-                " fieldType=" + fieldType +
+                " fieldType=" + fieldType.asTypeName() +
                 " fieldName=" + fieldName +
                 " fieldValue=" + value +
                 '}'
