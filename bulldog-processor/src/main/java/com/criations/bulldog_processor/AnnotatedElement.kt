@@ -6,10 +6,14 @@ import javax.lang.model.type.TypeMirror
 
 class BulldogElement(element: Element) : AnnotatedElement(element) {
 
+    companion object {
+        const val PREFIX = "Bulldog"
+    }
+
     val fields: List<FieldElement> = element
             .enclosedElements
             .asSequence()
-            .filter { it.kind == ElementKind.METHOD }
+            .filter { it.kind == ElementKind.FIELD && it.simpleName.toString() != "INSTANCE" }
             .map { FieldElement(it) }
             .toList()
 
@@ -18,7 +22,7 @@ class BulldogElement(element: Element) : AnnotatedElement(element) {
             return if (element.getAnnotation(Bulldog::class.java).name.isNotBlank()) {
                 element.getAnnotation(Bulldog::class.java).name
             } else {
-                name.toString()
+                PREFIX + name.toString()
             }
         }
 
@@ -33,16 +37,20 @@ class BulldogElement(element: Element) : AnnotatedElement(element) {
 
 class FieldElement(element: Element) : AnnotatedElement(element) {
 
+    val value: Any?
+        get() = (element as VariableElement).constantValue
+
     val fieldType: TypeMirror
-        get() = (element as ExecutableElement).returnType
+        get() = (element as VariableElement).asType()
 
     val fieldName: String
-        get() = element.simpleName.toString().substring(3, element.simpleName.length).toLowerCase()
+        get() = element.simpleName.toString()
 
     override fun toString(): String {
         return "FieldElement{" +
                 " fieldType=" + fieldType +
                 " fieldName=" + fieldName +
+                " fieldValue=" + value +
                 '}'
     }
 

@@ -12,23 +12,24 @@ import com.criations.bulldog_runtime.bullDogCtx
  * sergioserra99@gmail.com
  */
 @Bulldog(name = "UserSettings")
-interface UserModel {
-    val id: Int
-    val email: String
+object UserModel {
+    const val id: Int = 20
+    const val email: String = "sergioserra@gmail.com"
 }
 
 @Bulldog
-abstract class NetworkSettings {
-    abstract val id: Int
-    abstract val email: String
+object NetworkSettings {
+    const val id: Int = 22
+    const val email: String = "sergio@gmail.com"
 }
 
-class UserSettings : UserModel {
+/*
+class UserSettings {
 
     private val prefs: SharedPreferences = bullDogCtx.getSharedPreferences(javaClass.simpleName, MODE_PRIVATE)
 
-    override val id: Int by bindPreference(prefs, 10, "id")
-    override val email: String by bindPreference(prefs, "sergio@gmail.com", "email")
+    val id: Int by bindPreference(prefs, 10, "id")
+    val email: String by bindPreference(prefs, "sergio@gmail.com", "email")
 
     fun clearId() = prefs.edit().remove("id").apply()
     fun clearEmail() = prefs.edit().remove("email").apply()
@@ -38,4 +39,4 @@ class UserSettings : UserModel {
             remove("email")
         }.apply()
     }
-}
+}*/
