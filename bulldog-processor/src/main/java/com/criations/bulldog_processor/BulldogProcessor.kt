@@ -11,8 +11,7 @@ import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
-import javax.tools.Diagnostic.Kind.ERROR
-import javax.tools.Diagnostic.Kind.WARNING
+import javax.tools.Diagnostic.Kind.*
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -29,7 +28,7 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
     private fun warning(msg: String, vararg args: Any) {
-        mMessager.printMessage(WARNING, String.format(msg, *args))
+        mMessager.printMessage(NOTE, String.format(msg, *args))
     }
 
     @Synchronized
@@ -193,6 +192,7 @@ class BulldogProcessor : AbstractProcessor() {
         val modeType = ClassName("android.content.Context", "MODE_PRIVATE")
         val bulldogType = ClassName("com.criations.bulldog_runtime", "bullDogCtx")
         val bindPrefType = ClassName("com.criations.bulldog_runtime", "bindPreference")
+
     }
 
 }
