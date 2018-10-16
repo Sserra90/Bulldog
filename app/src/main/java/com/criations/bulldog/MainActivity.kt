@@ -14,11 +14,10 @@ class MainActivity : AppCompatActivity() {
 
         bullDogCtx = applicationContext
 
-        /*UserSettings().apply {
+        UserSettings().apply {
             id = 2
             email = "abc@gmail.com"
-        }*/
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("a",true).apply()
+        }
 
         Log.d("PREFS", UserSettings().toString())
 

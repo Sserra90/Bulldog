@@ -27,7 +27,7 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 ext {
-    bulldog = "dev-SNAPSHOT"
+    bulldog = "f9ad4f4aff"
 }
 
 dependencies {
@@ -35,8 +35,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    //kapt "org.bitbucket.sserra.bulldog:bulldog-processor:$bulldog"
-    //implementation "org.bitbucket.sserra.bulldog:bulldog-runtime:$bulldog"
+    //kapt "com.github.Sserra90.bulldog:bulldog-processor:$bulldog"
+    //implementation "com.github.Sserra90.bulldog:bulldog-runtime:$bulldog"
 
     implementation project(":bulldog-runtime")
     kapt project(":bulldog-processor")

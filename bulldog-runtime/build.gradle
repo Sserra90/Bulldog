@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'org.bitbucket.Sserra.bulldog'
+group = 'com.github.Sserra90.bulldog'
 
 android {
     compileSdkVersion 28

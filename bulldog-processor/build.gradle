@@ -3,7 +3,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 
 // Jitpack group
-group = 'org.bitbucket.Sserra.bulldog'
+group = 'com.github.Sserra90.bulldog'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
