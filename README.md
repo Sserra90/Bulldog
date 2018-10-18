@@ -8,7 +8,13 @@ Android library to simplify reading and writing to SharedPreferences, never writ
 
 # How to use it
 
-Just create a model with wanted properties and default values like the this:
+Add dependencies to build.gradle
+```gradle
+ kapt "com.github.Sserra90.bulldog:bulldog-processor:$bulldog"
+ implementation "com.github.Sserra90.bulldog:bulldog-runtime:$bulldog"
+```
+
+Create a spec with wanted properties and default values like the this:
 
 ```kotlin
 @Bulldog(name = "UserSettings")
@@ -36,7 +42,7 @@ Log.d("PREFS", UserSettings().id)
 Log.d("PREFS", UserSettings().toString())
 ````
 
-If no name is specified in @Bulldog annotation, the generated class will have the name of the specification object prefixed with Bulldog.
+If no name is specified in @Bulldog annotation, the generated class will have the name of the spec object prefixed with Bulldog.
 
 # Read values
 Just access object property like a normal object
