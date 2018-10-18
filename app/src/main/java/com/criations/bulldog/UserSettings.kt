@@ -30,7 +30,7 @@ object NetworkSettings {
     const val email: String = "sergio@gmail.com"
 }
 
-
+/*
 class UserSettings2 {
 
     private val prefs: SharedPreferences = bullDogCtx.getSharedPreferences(javaClass.simpleName, MODE_PRIVATE)
@@ -55,6 +55,7 @@ class UserSettings2 {
                     " role=$role"
 
 }
+*/
 
 enum class Roles {
     USER, ADMIN;

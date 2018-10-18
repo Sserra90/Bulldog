@@ -32,7 +32,7 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
     private fun warning(msg: String, vararg args: Any) {
-        mMessager.printMessage(WARNING, String.format(msg, *args))
+        mMessager.printMessage(NOTE, String.format(msg, *args))
     }
 
     @Synchronized
