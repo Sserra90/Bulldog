@@ -1,13 +1,17 @@
 package com.criations.bulldog_processor
 
 import com.criations.bulldog_annotations.Bulldog
+import com.criations.bulldog_annotations.Enum
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.*
+import com.sun.org.apache.xerces.internal.util.DOMUtil.getAnnotation
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.Element
+import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
-import javax.lang.model.type.TypeMirror
+import javax.lang.model.type.*
 import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
@@ -28,7 +32,7 @@ class BulldogProcessor : AbstractProcessor() {
     }
 
     private fun warning(msg: String, vararg args: Any) {
-        mMessager.printMessage(NOTE, String.format(msg, *args))
+        mMessager.printMessage(WARNING, String.format(msg, *args))
     }
 
     @Synchronized
@@ -44,6 +48,7 @@ class BulldogProcessor : AbstractProcessor() {
         allowedTypes.add("java.lang.Float".asType(mElements))
         allowedTypes.add("java.lang.String".asType(mElements))
         allowedTypes.add("java.lang.Boolean".asType(mElements))
+        allowedTypes.add("java.lang.Enum".asType(mElements))
     }
 
     override fun getSupportedAnnotationTypes(): Set<String> = setOf(Bulldog::class.java.canonicalName)
@@ -74,15 +79,31 @@ class BulldogProcessor : AbstractProcessor() {
 
     private fun validate(element: BulldogElement): Boolean {
         element.fields.forEach { field ->
+
             if (!allowedTypes.contains(mapToJavaType(field))) {
-                error("Type %s not allowed for field: %s", field.fieldType.asTypeName(), field)
+                error("Type %s is not allowed, field: %s", field.fieldType.asTypeName(), field)
                 return false
             }
+
+            if (isEnum(field)) {
+                if (!hasEnumAnnotation(field.element)) {
+                    error("Field %s is an Enum, please annotated the field with @Enum", field)
+                    return false
+                }
+
+                val value = field.element.getAnnotation(Enum::class.java).value
+                if (value.isEmpty()) {
+                    error("Value for field %s cannot be null or empty", field)
+                    return false
+                }
+            }
+
         }
         return true
     }
 
     private fun mapToJavaType(field: FieldElement): TypeMirror? {
+
         return when (field.fieldType.asTypeName().toString()) {
             "kotlin.Long" -> "java.lang.Long".asType(mElements)
             "kotlin.String" -> "java.lang.String".asType(mElements)
@@ -91,7 +112,9 @@ class BulldogProcessor : AbstractProcessor() {
             "kotlin.Boolean" -> "java.lang.Boolean".asType(mElements)
 
             "java.lang.String" -> "java.lang.String".asType(mElements)
-            else -> null
+            else -> {
+                if (isEnum(field)) "java.lang.Enum".asType(mElements) else null
+            }
         }
     }
 
@@ -122,7 +145,7 @@ class BulldogProcessor : AbstractProcessor() {
                 val propSpec = PropertySpec.builder(field.fieldName, getType(field))
                         .addModifiers(KModifier.PUBLIC)
                         .mutable(true)
-                        .delegate(getCodeFormat(field), bindPrefType, field.value, field.fieldName)
+                        .delegate(getCodeFormat(field), getPrefType(field), getFieldValue(field), field.fieldName)
                         .build()
                 classSpec.addProperty(propSpec)
 
@@ -149,6 +172,14 @@ class BulldogProcessor : AbstractProcessor() {
         }
 
         file.build().writeTo(outfile)
+    }
+
+    private fun getFieldValue(field: FieldElement): Any? {
+        if (!isEnum(field)) {
+            return field.value
+        }
+
+        return field.fieldType.toString() + "." + field.element.getAnnotation(Enum::class.java).value
     }
 
     private fun generateToString(element: BulldogElement): FunSpec {
@@ -178,6 +209,28 @@ class BulldogProcessor : AbstractProcessor() {
         }
     }
 
+    private fun getPrefType(field: FieldElement): ClassName {
+        if (isEnum(field)) {
+            return bindEnumPrefType
+        }
+        return bindPrefType
+    }
+
+    private fun isEnum(field: FieldElement): Boolean {
+        val fieldType: TypeMirror = field.fieldType
+        if (fieldType.kind == TypeKind.DECLARED) {
+            val type = mElements.getTypeElement(fieldType.toString())
+            if (type.kind == ElementKind.ENUM) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun hasEnumAnnotation(element: Element): Boolean {
+        return element.getAnnotation(Enum::class.java) != null
+    }
+
     private fun getPackage(element: TypeElement): String =
             element.qualifiedName.toString().substring(0, element.qualifiedName.toString().lastIndexOf("."))
 
@@ -192,6 +245,7 @@ class BulldogProcessor : AbstractProcessor() {
         val modeType = ClassName("android.content.Context", "MODE_PRIVATE")
         val bulldogType = ClassName("com.criations.bulldog_runtime", "bullDogCtx")
         val bindPrefType = ClassName("com.criations.bulldog_runtime", "bindPreference")
+        val bindEnumPrefType = ClassName("com.criations.bulldog_runtime", "bindEnumPreference")
 
     }
 

@@ -16,27 +16,11 @@ inline fun <reified V : Any> Any.bindPreference(prefs: SharedPreferences, defaul
     return PreferencesVar(prefs, IdentityAdapter(V::class.java), key) { default }
 }
 
-inline fun <reified V : Any> Any.bindPreference(default: V, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(prefs, IdentityAdapter(V::class.java), key) { default }
-}
-
-inline fun <reified V : Any> Any.bindPreference(noinline default: () -> V, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(prefs, IdentityAdapter(V::class.java), key, default)
-}
-
-inline fun <reified V : Any, reified P : Any> Any.bindPreference(default: V, adapter: Adapter<V, P>, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(prefs, adapter, key) { default }
-}
-
-inline fun <reified V : Any, reified P : Any> Any.bindPreference(noinline default: () -> V, adapter: Adapter<V, P>, key: String? = null): ReadWriteProperty<Any, V> {
-    return PreferencesVar(prefs, adapter, key, default)
-}
-
-inline fun <reified E : Enum<E>> Any.bindEnumPreference(default: E, key: String? = null): ReadWriteProperty<Any, E> {
+inline fun <reified E : Enum<E>> Any.bindEnumPreference(prefs: SharedPreferences, default: E, key: String? = null): ReadWriteProperty<Any, E> {
     return PreferencesVar(prefs, EnumAdapter(E::class.java), key) { default }
 }
 
-inline fun <reified E : Enum<E>> Any.bindEnumPreference(noinline default: () -> E, key: String? = null): ReadWriteProperty<Any, E> {
+inline fun <reified E : Enum<E>> Any.bindEnumPreference(prefs: SharedPreferences, noinline default: () -> E, key: String? = null): ReadWriteProperty<Any, E> {
     return PreferencesVar(prefs, EnumAdapter(E::class.java), key, default)
 }
 

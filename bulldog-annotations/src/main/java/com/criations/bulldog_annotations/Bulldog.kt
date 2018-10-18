@@ -13,3 +13,8 @@ package com.criations.bulldog_annotations
 @Target(AnnotationTarget.CLASS)
 @Retention(value = AnnotationRetention.RUNTIME)
 annotation class Bulldog(val name: String = "")
+
+@Target(AnnotationTarget.FIELD)
+@Retention(value = AnnotationRetention.RUNTIME)
+annotation class Enum(val value: String)
+
