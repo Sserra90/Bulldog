@@ -4,7 +4,7 @@
 
 Please check https://sserra.gitbook.io/bulldog/ for full documentation
 
-## Why MaterialProgressBar?
+## Why Bulldog?
 
 - Avoid boilerplate.
 - Write less code, avoid bugs.
