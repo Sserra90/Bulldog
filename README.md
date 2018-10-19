@@ -1,12 +1,20 @@
 # Bulldog
 
+
+
 Please check https://sserra.gitbook.io/bulldog/ for full documentation
 
-# Motivation
+## Why MaterialProgressBar?
+
+- Avoid boilerplate.
+- Write less code, avoid bugs.
+- Easily organize your preferences.
+
+## Motivation
 
 Android library to simplify reading and writing to SharedPreferences, never write code like this anymore ```prefs.edit().putString("someKey","someString").apply()```
 
-# How to use it
+## How to use it
 
 Add dependencies to build.gradle
 ```gradle
@@ -44,19 +52,19 @@ Log.d("PREFS", UserSettings().toString())
 
 If no name is specified in @Bulldog annotation, the generated class will have the name of the spec object prefixed with Bulldog.
 
-# Read values
+## Read values
 Just access object property like a normal object
 ```kotlin
 Log.d("UserId", UserSettings().id)
 ```
-# Write values
+## Write values
 ```kotlin
 UserSettings().apply{
     id = 4
     Log.d("UserId", id)
 }
 ```
-# Clear values
+## Clear values
 Bulldog generates a clear method for each entry
 ```kotlin
 UserSettings().apply{
@@ -64,7 +72,7 @@ UserSettings().apply{
     Log.d("UserId", id) // Will return the default value
 }
 ```
-# Print information
+## Print information
 Bulldog also generates a toString() human readable implementation
 
 ```kotlin
@@ -73,7 +81,7 @@ Log.d("PREFS", UserSettings().toString())
 // UserSettings  id=20, email=sergioserra@gmail.com, likes=20, isPremium=false minutesLeft=24.
 ```
 
-# Enum support
+## Enum support
 
 Bulldog supports Enum type using the @Enum annotation.
 ```kotlin
