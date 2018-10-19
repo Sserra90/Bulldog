@@ -6,7 +6,7 @@ Please check https://sserra.gitbook.io/bulldog/ for full documentation
 
 ## Why Bulldog?
 
-- Avoid boilerplate.
+- Avoid boilerplate, error prone code, improve productivity.
 - Write less code, avoid bugs.
 - Easily organize your preferences.
 
