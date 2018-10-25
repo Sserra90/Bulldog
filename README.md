@@ -1,8 +1,9 @@
 # Bulldog
 
 
+Please check https://sserra.gitbook.io/bulldog/ for full documentation.
 
-Please check https://sserra.gitbook.io/bulldog/ for full documentation
+Medium https://medium.com/@Sserra90/announcing-bulldog-never-use-sharedpreferences-anymore-92cd32249314
 
 ## Why Bulldog?
 
