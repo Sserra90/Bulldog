@@ -166,7 +166,7 @@ class BulldogProcessor : AbstractProcessor() {
             file.addType(classSpec.build())
         }
 
-        val outfile = File(processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME], KAPT_DIR)
+        val outfile = File(processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME])
         if (!outfile.exists()) {
             outfile.mkdirs()
         }
@@ -236,7 +236,6 @@ class BulldogProcessor : AbstractProcessor() {
 
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
-        const val KAPT_DIR = "Bulldog"
         const val KAPT_FILENAME = "BulldogSettings"
         const val PREFS = "prefs"
         const val CLEAR_ALL = "clearAll"

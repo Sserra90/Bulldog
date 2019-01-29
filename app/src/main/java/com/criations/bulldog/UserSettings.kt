@@ -30,33 +30,6 @@ object NetworkSettings {
     const val email: String = "sergio@gmail.com"
 }
 
-/*
-class UserSettings2 {
-
-    private val prefs: SharedPreferences = bullDogCtx.getSharedPreferences(javaClass.simpleName, MODE_PRIVATE)
-
-    var id: Int by bindPreference(prefs, 10, "id")
-    var email: String by bindPreference(prefs, "sergio@gmail.com", "email")
-    var role: Roles by bindEnumPreference(prefs, Roles.USER, "role")
-
-    fun clearId() = prefs.edit().remove("id").apply()
-    fun clearEmail() = prefs.edit().remove("email").apply()
-    fun clearAll() {
-        prefs.edit().apply {
-            remove("id")
-            remove("email")
-        }.apply()
-    }
-
-    override fun toString(): String =
-            "UserSettings2:" +
-                    " id=$id," +
-                    " email=$email" +
-                    " role=$role"
-
-}
-*/
-
 enum class Roles {
     USER, ADMIN;
 
